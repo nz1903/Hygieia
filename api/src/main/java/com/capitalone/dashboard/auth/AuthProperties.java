@@ -270,18 +270,4 @@ public class AuthProperties {
 		this.obfuscatePassword = obfuscatePassword;
 	}
 	
-	public String getAgentConfig() {
-		String agentConfig = "use-verbose-error-messages=" + this.getUseVerboseErrorMessages() +"\n" 
-				+ "http-only=" + this.getHttpOnly() + "\n" + "secure-cookie=" + this.getSecureCookie() + "\n"
-				+ "cookie-path=" + this.getCookiePath() + "\n" + "token-renewuntil=" + this.getTokenRenewuntil() 
-				+ "\n" + "token-notbefore-tolerance=" + this.getTokenNotbeforeTolerance() + "\n"
-				+ "cookie-domain=" + this.getCookieDomain() + "\n" + "password=" + this.getPassword() + "\n"
-				+ "token-name=" + this.getTokenName() + "\n" + "use-cookie=" + this.getUseCookie()
-				+ "\n" + "cipher-suite=" + this.getCipherSuite() + "\n" + "use-sunjce=" + this.getUseSunjce() +"\n"
-				+ "session-cookie=" + this.getSessionCookie() + "\n" + "token-lifetime=" + this.getTokenLifetime() 
-				+ "\n" + "obfuscate-password=" + this.getObfuscatePassword() + "\n";
-		
-		return agentConfig;
-	}
-
 }

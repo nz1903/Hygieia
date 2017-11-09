@@ -10,13 +10,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.capitalone.dashboard.auth.AuthProperties;
 import com.capitalone.dashboard.auth.ldap.CustomUserDetails;
 import com.google.common.collect.Sets;
 import com.pingidentity.opentoken.Agent;
@@ -24,9 +22,6 @@ import com.pingidentity.opentoken.Agent;
 @Component
 public class PingAuthenticationServiceImpl implements PingAuthenticationService {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationServiceImpl.class);
-	
-	@Autowired
-	private AuthProperties authProperties;
 	
 	@Override
 	public Authentication getAuthentication(HttpServletRequest request) {
@@ -51,7 +46,7 @@ public class PingAuthenticationServiceImpl implements PingAuthenticationService 
 
 			ServletContext context = req.getServletContext();
 			Agent agent = null;
-			String agentConfig = authProperties.getAgentConfig();
+			String agentConfig = PingAuthenticationUtil.getAgentConfig();
 			
 			if (context != null) {
 				ByteArrayInputStream configStream = new ByteArrayInputStream(agentConfig.getBytes());

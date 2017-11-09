@@ -4,15 +4,20 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
+import com.capitalone.dashboard.auth.AuthProperties;
 import com.capitalone.dashboard.auth.ldap.CustomUserDetails;
 import com.capitalone.dashboard.model.AuthType;
 
 public class PingAuthenticationUtil {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationUtil.class);
+	
+	@Autowired
+	private static AuthProperties authProperties;
 	
 	static CustomUserDetails createUser(Map<String, String> userInfo) {
 		CustomUserDetails customUserDetails = null;
@@ -72,5 +77,19 @@ public class PingAuthenticationUtil {
 		// -- Ping SSO Authentication will fetch the user details from LDAP system. The Authentication Type therefore can be given as LDAP.
 		result.setDetails(AuthType.LDAP);
 		return result;
+	}
+	
+	static String getAgentConfig() {
+		String agentConfig = "use-verbose-error-messages=" + authProperties.getUseVerboseErrorMessages() +"\n" 
+				+ "http-only=" + authProperties.getHttpOnly() + "\n" + "secure-cookie=" + authProperties.getSecureCookie() + "\n"
+				+ "cookie-path=" + authProperties.getCookiePath() + "\n" + "token-renewuntil=" + authProperties.getTokenRenewuntil() 
+				+ "\n" + "token-notbefore-tolerance=" + authProperties.getTokenNotbeforeTolerance() + "\n"
+				+ "cookie-domain=" + authProperties.getCookieDomain() + "\n" + "password=" + authProperties.getPassword() + "\n"
+				+ "token-name=" + authProperties.getTokenName() + "\n" + "use-cookie=" + authProperties.getUseCookie()
+				+ "\n" + "cipher-suite=" + authProperties.getCipherSuite() + "\n" + "use-sunjce=" + authProperties.getUseSunjce() +"\n"
+				+ "session-cookie=" + authProperties.getSessionCookie() + "\n" + "token-lifetime=" + authProperties.getTokenLifetime() 
+				+ "\n" + "obfuscate-password=" + authProperties.getObfuscatePassword() + "\n";
+		
+		return agentConfig;
 	}
 }
