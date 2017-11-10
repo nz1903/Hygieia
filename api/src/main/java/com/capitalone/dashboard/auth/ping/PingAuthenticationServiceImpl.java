@@ -3,10 +3,8 @@ package com.capitalone.dashboard.auth.ping;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -22,59 +20,45 @@ import com.pingidentity.opentoken.Agent;
 @Component
 public class PingAuthenticationServiceImpl implements PingAuthenticationService {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationServiceImpl.class);
-	
+
 	@Override
 	public Authentication getAuthentication(HttpServletRequest request) {
 		Authentication authentication = this.getAuthenticationData(request);
 		return authentication;
 	}
-	
+
 	private Collection<? extends GrantedAuthority> getAuthorities(Collection<String> roles) {
 		Collection<GrantedAuthority> authorities = Sets.newHashSet();
 		roles.forEach(role -> {
 			authorities.add(new SimpleGrantedAuthority(role));
 		});
-		
+
 		return authorities;
 	}
-	
+
 	private Authentication getAuthenticationData(HttpServletRequest req) {
 		CustomUserDetails customUserDetails = null;
 		try {
-			Map<String, String> userInfo = new HashMap<String, String>();
-			userInfo.put(Agent.TOKEN_SUBJECT, "");
-
-			ServletContext context = req.getServletContext();
-			Agent agent = null;
+			Map<String, String> userInfo = null;
 			String agentConfig = PingAuthenticationUtil.getAgentConfig();
-			
-			if (context != null) {
+
+			if (agentConfig != null) {
 				ByteArrayInputStream configStream = new ByteArrayInputStream(agentConfig.getBytes());
-				agent = new Agent(configStream);
-			}
-			
-			if (agent != null) {
+				Agent agent = new Agent(configStream);
 				userInfo = agent.readToken(req);
-			} else {
-				LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationData() :=> Agent is Null");
-			}
-			
-			if (userInfo != null) {
-				customUserDetails = PingAuthenticationUtil.createUser(userInfo);
-			}
-			else {
-				LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationData() :=> userInfo is Null");
-				return null;
+				if (userInfo != null) {
+					customUserDetails = PingAuthenticationUtil.createUser(userInfo);
+					return PingAuthenticationUtil.createSuccessfulAuthentication(customUserDetails);
+				} else {
+					LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationData() :=> userInfo is Null");
+				}
 			}
 		} catch (IOException ioe) {
 			LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationData() :=> IOException :" + ioe);
-			return null;
 		} catch (Exception exception) {
 			LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationData() :=> Exception :" + exception);
-			return null;
 		}
-		
-		return PingAuthenticationUtil.createSuccessfulAuthentication(customUserDetails);
+		return null;
 	}
-	
+
 }

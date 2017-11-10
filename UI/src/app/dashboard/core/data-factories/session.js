@@ -21,10 +21,10 @@
     	function updateSession() {
 			if(!userService.isAuthenticated()) {
 				return $http.get("/api/findUser")
-		        .then(function mySuccess(response) {
+		        .then(function scss(response) {
 		        	$window.localStorage.token = response.headers()['x-authentication-token'];
 		            return true;
-		        }, function myError(error) {
+		        }, function err(error) {
 		        	return "empty";
 		        });
 			} else {
