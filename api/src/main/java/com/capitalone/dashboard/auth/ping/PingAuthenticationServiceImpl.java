@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +21,9 @@ import com.pingidentity.opentoken.Agent;
 @Component
 public class PingAuthenticationServiceImpl implements PingAuthenticationService {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationServiceImpl.class);
+	
+	@Autowired
+	private PingAuthenticationUtil pingAuthenticationUtil;
 
 	@Override
 	public Authentication getAuthentication(HttpServletRequest request) {
@@ -40,15 +44,17 @@ public class PingAuthenticationServiceImpl implements PingAuthenticationService 
 		CustomUserDetails customUserDetails = null;
 		try {
 			Map<String, String> userInfo = null;
-			String agentConfig = PingAuthenticationUtil.getAgentConfig();
+			String agentConfig = pingAuthenticationUtil.getAgentConfig();
 
 			if (agentConfig != null) {
 				ByteArrayInputStream configStream = new ByteArrayInputStream(agentConfig.getBytes());
+				LOGGER.debug("config Stream created : " + configStream);
 				Agent agent = new Agent(configStream);
+				LOGGER.debug("cAgent created : " + agent);
 				userInfo = agent.readToken(req);
 				if (userInfo != null) {
 					customUserDetails = PingAuthenticationUtil.createUser(userInfo);
-					return PingAuthenticationUtil.createSuccessfulAuthentication(customUserDetails);
+					return pingAuthenticationUtil.createSuccessfulAuthentication(customUserDetails);
 				} else {
 					LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationData() :=> userInfo is Null");
 				}

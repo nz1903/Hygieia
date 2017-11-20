@@ -8,16 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Component;
 
 import com.capitalone.dashboard.auth.AuthProperties;
 import com.capitalone.dashboard.auth.ldap.CustomUserDetails;
 import com.capitalone.dashboard.model.AuthType;
 
+@Component
 public class PingAuthenticationUtil {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationUtil.class);
 	
 	@Autowired
-	private static AuthProperties authProperties;
+	private AuthProperties authProperties;
 	
 	static CustomUserDetails createUser(Map<String, String> userInfo) {
 		CustomUserDetails customUserDetails = null;
@@ -67,7 +69,7 @@ public class PingAuthenticationUtil {
 		return customUserDetails;
 	}
 
-	static Authentication createSuccessfulAuthentication(CustomUserDetails user) {
+	Authentication createSuccessfulAuthentication(CustomUserDetails user) {
 		if(user == null) {
 			return null;
 		}
@@ -79,7 +81,8 @@ public class PingAuthenticationUtil {
 		return result;
 	}
 	
-	static String getAgentConfig() {
+	String getAgentConfig() {
+		LOGGER.debug("in PingAuthenticationUtil class, getAgentConfig method : " + authProperties );
 		String agentConfig = "use-verbose-error-messages=" + authProperties.getUseVerboseErrorMessages() +"\n" 
 				+ "http-only=" + authProperties.getHttpOnly() + "\n" + "secure-cookie=" + authProperties.getSecureCookie() + "\n"
 				+ "cookie-path=" + authProperties.getCookiePath() + "\n" + "token-renewuntil=" + authProperties.getTokenRenewuntil() 
