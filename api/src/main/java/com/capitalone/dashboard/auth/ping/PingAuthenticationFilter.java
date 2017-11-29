@@ -1,6 +1,9 @@
 package com.capitalone.dashboard.auth.ping;
 
-import javax.servlet.http.Cookie;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,23 +37,21 @@ public class PingAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		Authentication authenticated = null;
-    	
-		Cookie[] cookies = httpRequest.getCookies();
-    	
-    	if(cookies != null && cookies.length > 0) {
-	    	for (Cookie cookie : cookies) {
-				if(authProperties.getTokenName() != null && cookie.getName() != null 
-						&& cookie.getName().equals(authProperties.getTokenName())) {
-					authenticated = pingAuthenticationService.getAuthentication( httpRequest);
-			        break;
-				}
-			}
-    	}
-    	else {
-			LOGGER.debug("Authentication not found in request, returning from PingAuthenticationFilter.");
+		Map<String, String> headersMap = new HashMap<>();
+		
+		Enumeration<String> headers = request.getHeaderNames();
+		while(headers.hasMoreElements()) {
+			String headerName = headers.nextElement();
+			headersMap.put(headerName, request.getHeader(headerName));
 		}
+		
+		if(request.getHeader(authProperties.getUserHeader()) == null) {
+			LOGGER.debug("no header found for user details");
+			return null;
+		}
+		authenticated = pingAuthenticationService.getAuthenticationFromHeaders(headersMap);
+    	
     	return authenticated;
 	}
 }

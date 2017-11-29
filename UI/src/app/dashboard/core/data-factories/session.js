@@ -12,16 +12,29 @@
     .module(HygieiaConfig.module + '.core')
       .factory('Session', Session);
 
-    Session.$inject = ['$http', '$window', 'userService'];
-    function Session($http, $window, userService) {
+    Session.$inject = ['$http', '$window', 'userService', '$cookies'];
+    function Session($http, $window, userService, $cookies) {
     	return {
     		updateSession : updateSession
     	}
     	
     	function updateSession() {
 			if(!userService.isAuthenticated()) {
-				return $http.get("/api/findUser")
-		        .then(function scss(response) {
+				/*return $http.get("/api/findUser")*/
+				var req = {
+						 method: 'GET',
+						 url: '/api/findUser',
+						 headers: {
+						   'HTTP_USER': $cookies.get('HTTP_USERC'),
+						   'givenName':$cookies.get('givenNameC'),
+						   'sn':$cookies.get('snC'),
+						   'mail':$cookies.get('mailC'),
+						   'displayName':$cookies.get('DisplayNameC'),
+						   'initials':$cookies.get('initialsC')
+						 }
+				}
+
+				return $http(req).then(function scss(response) {
 		        	$window.localStorage.token = response.headers()['x-authentication-token'];
 		            return true;
 		        }, function err(error) {

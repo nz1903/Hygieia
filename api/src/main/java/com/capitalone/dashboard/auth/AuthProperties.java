@@ -35,23 +35,9 @@ public class AuthProperties {
 	private String ldapBindUser;
 	private String ldapBindPass;
 	
-	// -- Ping SSO properties
-	private String useVerboseErrorMessages;
-	private String httpOnly;
-	private String secureCookie;
-	private String cookiePath;
-	private String tokenRenewuntil;
-	private String tokenNotbeforeTolerance;
-	private String cookieDomain;
-	private String password;
-	private String tokenName;
-	private String useCookie;
-	private String cipherSuite;
-	private String useSunjce;
-	private String sessionCookie;
-	private int tokenLifetime;
-	private String obfuscatePassword;
-	//-- end Ping SSO properties
+	// -- Ping SSO property
+	private String userHeader;
+	//-- end Ping SSO property
 	
 	public void setExpirationTime(Long expirationTime) {
 		this.expirationTime = expirationTime;
@@ -149,125 +135,13 @@ public class AuthProperties {
 		    authenticationProviders.add(AuthType.STANDARD);
 		}
 	}
-	
-	public String getUseVerboseErrorMessages() {
-		return useVerboseErrorMessages;
+
+	public String getUserHeader() {
+		return userHeader;
 	}
 
-	public void setUseVerboseErrorMessages(String useVerboseErrorMessages) {
-		this.useVerboseErrorMessages = useVerboseErrorMessages;
-	}
-
-	public String getHttpOnly() {
-		return httpOnly;
-	}
-
-	public void setHttpOnly(String httpOnly) {
-		this.httpOnly = httpOnly;
-	}
-
-	public String getSecureCookie() {
-		return secureCookie;
-	}
-
-	public void setSecureCookie(String secureCookie) {
-		this.secureCookie = secureCookie;
-	}
-
-	public String getCookiePath() {
-		return cookiePath;
-	}
-
-	public void setCookiePath(String cookiePath) {
-		this.cookiePath = cookiePath;
-	}
-
-	public String getTokenRenewuntil() {
-		return tokenRenewuntil;
-	}
-
-	public void setTokenRenewuntil(String tokenRenewuntil) {
-		this.tokenRenewuntil = tokenRenewuntil;
-	}
-
-	public String getTokenNotbeforeTolerance() {
-		return tokenNotbeforeTolerance;
-	}
-
-	public void setTokenNotbeforeTolerance(String tokenNotbeforeTolerance) {
-		this.tokenNotbeforeTolerance = tokenNotbeforeTolerance;
-	}
-
-	public String getCookieDomain() {
-		return cookieDomain;
-	}
-
-	public void setCookieDomain(String cookieDomain) {
-		this.cookieDomain = cookieDomain;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getTokenName() {
-		return tokenName;
-	}
-
-	public void setTokenName(String tokenName) {
-		this.tokenName = tokenName;
-	}
-
-	public String getUseCookie() {
-		return useCookie;
-	}
-
-	public void setUseCookie(String useCookie) {
-		this.useCookie = useCookie;
-	}
-
-	public String getCipherSuite() {
-		return cipherSuite;
-	}
-
-	public void setCipherSuite(String cipherSuite) {
-		this.cipherSuite = cipherSuite;
-	}
-
-	public String getUseSunjce() {
-		return useSunjce;
-	}
-
-	public void setUseSunjce(String useSunjce) {
-		this.useSunjce = useSunjce;
-	}
-
-	public String getSessionCookie() {
-		return sessionCookie;
-	}
-
-	public void setSessionCookie(String sessionCookie) {
-		this.sessionCookie = sessionCookie;
-	}
-
-	public int getTokenLifetime() {
-		return tokenLifetime;
-	}
-
-	public void setTokenLifetime(int tokenLifetime) {
-		this.tokenLifetime = tokenLifetime;
-	}
-
-	public String getObfuscatePassword() {
-		return obfuscatePassword;
-	}
-
-	public void setObfuscatePassword(String obfuscatePassword) {
-		this.obfuscatePassword = obfuscatePassword;
+	public void setUserHeader(String userHeader) {
+		this.userHeader = userHeader;
 	}
 	
 }
