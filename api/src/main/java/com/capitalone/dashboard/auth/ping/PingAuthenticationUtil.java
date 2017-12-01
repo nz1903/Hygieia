@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import com.capitalone.dashboard.auth.AuthProperties;
 import com.capitalone.dashboard.auth.ldap.CustomUserDetails;
 import com.capitalone.dashboard.model.AuthType;
 
@@ -18,17 +16,14 @@ import com.capitalone.dashboard.model.AuthType;
 public class PingAuthenticationUtil {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationUtil.class);
 	
-	@Autowired
-	private AuthProperties authProperties;
-	
 	CustomUserDetails createUser(Map<String, String> userInfo) {
 		CustomUserDetails customUserDetails = null;
 		
 		try {
-			if (userInfo.get(authProperties.getUserHeader()) != null) {
+			if (userInfo.get("HTTP_USER") != null) {
 				customUserDetails = new CustomUserDetails();
 				
-				customUserDetails.setUsername("" + userInfo.get(authProperties.getUserHeader()));
+				customUserDetails.setUsername("" + userInfo.get("HTTP_USER"));
 				customUserDetails.setAccountNonExpired(true);
 				customUserDetails.setAccountNonLocked(true);
 				customUserDetails.setCredentialsNonExpired(true);

@@ -20,17 +20,20 @@
     	
     	function updateSession() {
 			if(!userService.isAuthenticated()) {
-				/*return $http.get("/api/findUser")*/
+				var requestCookies = $cookies.getAll();
+				
+				var list = {}
+	            var count = 0;
+	            var keys = Object.keys(requestCookies);
+	            _(requestCookies).forEach(function (val) {
+	                list[keys[count++]] = val;
+	            });
+	            
 				var req = {
 						 method: 'GET',
 						 url: '/api/findUser',
 						 headers: {
-						   'HTTP_USER': $cookies.get('HTTP_USERC'),
-						   'givenName':$cookies.get('givenNameC'),
-						   'sn':$cookies.get('snC'),
-						   'mail':$cookies.get('mailC'),
-						   'displayName':$cookies.get('DisplayNameC'),
-						   'initials':$cookies.get('initialsC')
+							 'cookiesHeader': angular.toJson(list)
 						 }
 				}
 
@@ -44,6 +47,5 @@
 				return "authenticated";
 			}
 		}
-    	
     }
 })();

@@ -40,18 +40,22 @@ public class PingAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 		Authentication authenticated = null;
 		Map<String, String> headersMap = new HashMap<>();
 		
+		if(request.getHeader("cookiesHeader") == null) {
+			LOGGER.debug("no header found for user details");
+			return authenticated;
+		}
+		
 		Enumeration<String> headers = request.getHeaderNames();
+		
+		if(headers == null || headers.hasMoreElements() == false) {
+			return authenticated;
+		}
 		while(headers.hasMoreElements()) {
 			String headerName = headers.nextElement();
 			headersMap.put(headerName, request.getHeader(headerName));
 		}
 		
-		if(request.getHeader(authProperties.getUserHeader()) == null) {
-			LOGGER.debug("no header found for user details");
-			return null;
-		}
 		authenticated = pingAuthenticationService.getAuthenticationFromHeaders(headersMap);
-    	
     	return authenticated;
 	}
 }
