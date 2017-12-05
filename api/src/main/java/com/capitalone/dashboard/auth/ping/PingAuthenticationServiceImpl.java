@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,7 +41,9 @@ public class PingAuthenticationServiceImpl implements PingAuthenticationService 
 		CustomUserDetails customUserDetails = null;
 		try {
 			if (headersMap != null) {
-				Object cookiesHeader = headersMap.get("cookiesheader");
+				String cookiesHeader = headersMap.get("cookiesheader");
+				
+				HashMap<String,String> userInfoDataMap = new ObjectMapper().readValue(cookiesHeader, HashMap.class);
 				
 				/*int count = 0;
 				for(String header : headersMap.keySet()) {
@@ -48,40 +51,7 @@ public class PingAuthenticationServiceImpl implements PingAuthenticationService 
 				}
 				LOGGER.debug("cookiesHeader : ==> =====> =======>  " + cookiesHeader);*/
 				
-				if(cookiesHeader != null) {
-					String[] cookieHeaders = cookiesHeader.toString().split("\",\"");
-					
-					if(cookieHeaders.length > 1) {
-						Map<String, String> userInfo = new HashMap<>();
-						
-						for(int countCookieHeader = 0 ; countCookieHeader < cookieHeaders.length ; countCookieHeader++) {
-				            String[] userInfoHeadersVal = cookieHeaders[countCookieHeader].split("\":\"");
-				            String[] processUserInfoCookieHeader = {"",""};
-				            
-				            int processedCookieValueCount = 0;
-				            for(String userInfoHeaderVal : userInfoHeadersVal) {
-				                if(userInfoHeaderVal.startsWith("{"))
-				                    userInfoHeaderVal = userInfoHeaderVal.substring(1);
-				                if(userInfoHeaderVal.startsWith("\""))
-				                    userInfoHeaderVal = userInfoHeaderVal.substring(1);
-				                
-				                if(userInfoHeaderVal.endsWith("}"))
-				                    userInfoHeaderVal = userInfoHeaderVal.substring(0, userInfoHeaderVal.length()-1);
-				                if(userInfoHeaderVal.endsWith("\""))
-				                    userInfoHeaderVal = userInfoHeaderVal.substring(0, userInfoHeaderVal.length()-1);
-				                
-				                if(userInfoHeaderVal.contains("null")) {
-				                	userInfoHeaderVal = null;
-				                }
-				                processUserInfoCookieHeader[processedCookieValueCount] = userInfoHeaderVal;
-				                processedCookieValueCount++;
-				            }
-				            userInfo.put(processUserInfoCookieHeader[0].substring(0, processUserInfoCookieHeader[0].length()-1), processUserInfoCookieHeader[1]);
-				        }
-						/*LOGGER.debug("userInfo : )==> " + userInfo);*/
-						customUserDetails = pingAuthenticationUtil.createUser(userInfo);
-					}	
-				}
+				customUserDetails = pingAuthenticationUtil.createUser(userInfoDataMap);
 				return pingAuthenticationUtil.createSuccessfulAuthentication(customUserDetails);
 			} else {
 				LOGGER.error("PingAuthenticationServiceImpl.getAuthenticationDataFromHeaders() :=> userInfo is Null");

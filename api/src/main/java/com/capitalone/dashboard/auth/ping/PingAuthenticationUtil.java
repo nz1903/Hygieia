@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import com.capitalone.dashboard.auth.AuthProperties;
 import com.capitalone.dashboard.auth.ldap.CustomUserDetails;
 import com.capitalone.dashboard.model.AuthType;
 
@@ -16,43 +18,51 @@ import com.capitalone.dashboard.model.AuthType;
 public class PingAuthenticationUtil {
 	private static final Logger LOGGER = Logger.getLogger(PingAuthenticationUtil.class);
 	
+	@Autowired
+	private AuthProperties authProperties;
+	
 	CustomUserDetails createUser(Map<String, String> userInfo) {
 		CustomUserDetails customUserDetails = null;
 		
 		try {
-			if (userInfo.get("HTTP_USER") != null) {
+			if (userInfo.get(authProperties.getUserEid()) != null) {
 				customUserDetails = new CustomUserDetails();
 				
-				customUserDetails.setUsername("" + userInfo.get("HTTP_USER"));
+				customUserDetails.setUsername("" + userInfo.get(authProperties.getUserEid()));
 				customUserDetails.setAccountNonExpired(true);
 				customUserDetails.setAccountNonLocked(true);
 				customUserDetails.setCredentialsNonExpired(true);
 				customUserDetails.setEnabled(true);
 				customUserDetails.setAuthorities(new ArrayList<GrantedAuthority>());
 				
-				if (userInfo.get("givenName") != null) {
-					LOGGER.info("givenName from attr: " + userInfo.get("givenName"));
-					customUserDetails.setFirstName("" + userInfo.get("givenName"));
+				String userFirstName = userInfo.get(authProperties.getUserFirstName());
+				if (userFirstName != null) {
+					LOGGER.info("givenName from attr: " + userFirstName);
+					customUserDetails.setFirstName("" + userFirstName);
 				}
 
-				if (userInfo.get("initials") != null) {
-					LOGGER.info("initials from attr: " + userInfo.get("initials"));
-					customUserDetails.setMiddleName("" + userInfo.get("initials"));
+				String userInitials = userInfo.get(authProperties.getUserMiddelInitials());
+				if (userInitials != null) {
+					LOGGER.info("initials from attr: " + userInitials);
+					customUserDetails.setMiddleName("" + userInitials);
 				}
-
-				if (userInfo.get("sn") != null) {
-					LOGGER.info("sn from attr: " + userInfo.get("sn"));
-					customUserDetails.setLastName("" + userInfo.get("sn"));
+				
+				String userLastName = userInfo.get(authProperties.getUserLastName());
+				if (userLastName != null) {
+					LOGGER.info("sn from attr: " + userLastName);
+					customUserDetails.setLastName("" + userLastName);
 				}
-
-				if (userInfo.get("displayName") != null) {
-					LOGGER.info("displayName from attr: " + userInfo.get("displayName"));
-					customUserDetails.setDisplayName("" + userInfo.get("displayName"));
+				
+				String userDisplayName = userInfo.get(authProperties.getUserDisplayName());
+				if (userDisplayName != null) {
+					LOGGER.info("displayName from attr: " + userDisplayName);
+					customUserDetails.setDisplayName("" + userDisplayName);
 				}
-
-				if (userInfo.get("mail") != null) {
-					LOGGER.info("mail from attr: " + userInfo.get("mail"));
-					customUserDetails.setEmailAddress("" + userInfo.get("mail"));
+				
+				String userEmail = userInfo.get(authProperties.getUserEmail());
+				if (userEmail != null) {
+					LOGGER.info("mail from attr: " + userEmail);
+					customUserDetails.setEmailAddress("" + userEmail);
 				}
 			}
 			else {

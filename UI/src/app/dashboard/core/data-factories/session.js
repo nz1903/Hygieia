@@ -21,19 +21,11 @@
     	function updateSession() {
 			if(!userService.isAuthenticated()) {
 				var requestCookies = $cookies.getAll();
-				
-				var list = {}
-	            var count = 0;
-	            var keys = Object.keys(requestCookies);
-	            _(requestCookies).forEach(function (val) {
-	                list[keys[count++]] = val;
-	            });
-	            
 				var req = {
 						 method: 'GET',
 						 url: '/api/findUser',
 						 headers: {
-							 'cookiesHeader': angular.toJson(list)
+							 'cookiesheader': angular.toJson(requestCookies)
 						 }
 				}
 
