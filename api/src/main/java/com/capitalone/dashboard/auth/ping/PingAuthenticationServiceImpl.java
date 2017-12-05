@@ -45,11 +45,11 @@ public class PingAuthenticationServiceImpl implements PingAuthenticationService 
 				
 				HashMap<String,String> userInfoDataMap = new ObjectMapper().readValue(cookiesHeader, HashMap.class);
 				
-				/*int count = 0;
+				int count = 0;
 				for(String header : headersMap.keySet()) {
 					LOGGER.debug("Header (" + ++count + ".) : " + header + ", value : " + headersMap.get(header));
 				}
-				LOGGER.debug("cookiesHeader : ==> =====> =======>  " + cookiesHeader);*/
+				LOGGER.debug("cookiesHeader : ==> =====> =======>  " + cookiesHeader);
 				
 				customUserDetails = pingAuthenticationUtil.createUser(userInfoDataMap);
 				return pingAuthenticationUtil.createSuccessfulAuthentication(customUserDetails);
